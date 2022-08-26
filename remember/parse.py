@@ -12,7 +12,7 @@ class Item(NamedTuple):
 
 
 def parse(command: str) -> Item:
-    pattern = re.compile("in ([0-9]+) months (.*)")
+    pattern = re.compile("in ([0-9]+) months? (.*)")
     matches = pattern.match(command)
     item = Item(description=matches.group(
         2), time=Time(months=int(matches.group(1))))
