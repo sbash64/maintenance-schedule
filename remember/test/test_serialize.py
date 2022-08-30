@@ -26,4 +26,7 @@ class SerializeTestCase(unittest.TestCase):
         self.assertEqual(reminders.todos[0].time.months, 2)
         self.assertEqual(reminders.todos[0].fromDate, datetime.date(2022, 8, 30))
         self.assertEqual(reminders.todos[1].description, "change mower oil")
+        self.assertEqual(reminders.todos[1].time.months, 4)
+        self.assertEqual(reminders.todos[1].fromDate, datetime.date(2022, 8, 30))
         self.assertEqual(reminders.todos[2].description, "get quotes for driveway")
+        self.assertEqual(reminders.todos[2].time.years, 2)
