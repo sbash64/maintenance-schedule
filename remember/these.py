@@ -1,5 +1,5 @@
 from typing import NamedTuple, List
-from datetime import date, timedelta
+from datetime import date
 from dateutil.relativedelta import relativedelta
 import bisect
 
@@ -13,12 +13,6 @@ class Item(NamedTuple):
     description: str
     time: Time
 
-    def __repr__(self):
-        return "in {} months {}".format(self.time.months, self.description)
-
-    def __lt__(self, other):
-        return self.time.months < other.time.months
-
 
 class ToDo(NamedTuple):
     description: str
@@ -31,7 +25,7 @@ class ToDo(NamedTuple):
         return "{} - {}".format(self.date.strftime("%B %d, %Y"), self.description)
 
 
-class Remember:
+class Reminders:
     def __init__(self):
         self.todos: List[ToDo] = []
 
@@ -39,8 +33,8 @@ class Remember:
         return ("{}" + "\n{}" * (len(self.todos) - 1)).format(*self.todos)
 
 
-def new() -> Remember:
-    return Remember()
+def new() -> Reminders:
+    return Reminders()
 
 
 def create_todo(item: Item, fromDate: date) -> ToDo:
@@ -50,5 +44,5 @@ def create_todo(item: Item, fromDate: date) -> ToDo:
     )
 
 
-def add(items: Remember, item: Item, fromDate: date):
-    bisect.insort(items.todos, create_todo(item, fromDate))
+def add(reminders: Reminders, item: Item, fromDate: date):
+    bisect.insort(reminders.todos, create_todo(item, fromDate))
