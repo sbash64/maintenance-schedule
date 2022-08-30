@@ -23,8 +23,7 @@ class Items:
         self.items: List[Item] = []
 
     def __str__(self):
-        s = "{}" + "\n{}" * (len(self.items) - 1)
-        return s.format(*self.items)
+        return ("{}" + "\n{}" * (len(self.items) - 1)).format(*self.items)
 
 
 def new() -> Items:
