@@ -23,3 +23,25 @@ def deserialize(file) -> Reminders:
             ),
         )
     return reminders
+
+
+def serialize(reminders: Reminders, file):
+    for todo in reminders.todos:
+        if todo.time.months > 0:
+            time = "{} month".format(todo.time.months)
+            if todo.time.months > 1:
+                time += "s"
+        else:
+            time = "{} year".format(todo.time.years)
+            if todo.time.years > 1:
+                time += "s"
+        print(
+            "in {} from {:02}/{:02}/{:04} {}".format(
+                time,
+                todo.fromDate.month,
+                todo.fromDate.day,
+                todo.fromDate.year,
+                todo.description,
+            ),
+            file=file,
+        )
