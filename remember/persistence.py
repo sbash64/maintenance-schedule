@@ -11,9 +11,15 @@ def deserialize(file) -> Reminders:
     )
     for line in file:
         matches = pattern.match(line)
+        if matches.group(2) == "month":
+            time = Time(months=int(matches.group(1)))
+        else:
+            time = Time(years=int(matches.group(1)))
         add(
             reminders,
-            Item(description=matches.group(6), time=Time()),
-            datetime.date.fromordinal(1),
+            Item(description=matches.group(6), time=time),
+            datetime.date(
+                int(matches.group(5)), int(matches.group(3)), int(matches.group(4))
+            ),
         )
     return reminders

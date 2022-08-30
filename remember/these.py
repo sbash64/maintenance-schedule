@@ -16,13 +16,19 @@ class Item(NamedTuple):
 
 class ToDo(NamedTuple):
     description: str
-    date: date
+    time: Time
+    fromDate: date
+
+    def date(self):
+        return self.fromDate + relativedelta(
+            years=self.time.years, months=self.time.months
+        )
 
     def __lt__(self, other):
-        return self.date < other.date
+        return self.date() < other.date()
 
     def __repr__(self):
-        return "{} - {}".format(self.date.strftime("%B %d, %Y"), self.description)
+        return "{} - {}".format(self.date().strftime("%B %d, %Y"), self.description)
 
 
 class Reminders:
@@ -38,10 +44,7 @@ def new() -> Reminders:
 
 
 def create_todo(item: Item, fromDate: date) -> ToDo:
-    return ToDo(
-        description=item.description,
-        date=fromDate + relativedelta(years=item.time.years, months=item.time.months),
-    )
+    return ToDo(description=item.description, time=item.time, fromDate=fromDate)
 
 
 def add(reminders: Reminders, item: Item, fromDate: date):

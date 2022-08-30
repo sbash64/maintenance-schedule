@@ -1,4 +1,5 @@
 import unittest
+import datetime
 
 from remember.persistence import deserialize
 
@@ -22,5 +23,7 @@ class SerializeTestCase(unittest.TestCase):
         )
         reminders = deserialize(file)
         self.assertEqual(reminders.todos[0].description, "change vacuum filter")
+        self.assertEqual(reminders.todos[0].time.months, 2)
+        self.assertEqual(reminders.todos[0].fromDate, datetime.date(2022, 8, 30))
         self.assertEqual(reminders.todos[1].description, "change mower oil")
         self.assertEqual(reminders.todos[2].description, "get quotes for driveway")
