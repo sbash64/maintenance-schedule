@@ -1,7 +1,12 @@
 import unittest
 import datetime
 
-from maintenance_schedule.remind import Recurrence, Period, new_schedule, add
+from maintenance_schedule.remind import (
+    Recurrence,
+    Period,
+    new_schedule,
+    add_to_schedule,
+)
 
 
 class FileStub:
@@ -16,17 +21,19 @@ class PrintTestCase(unittest.TestCase):
     def test_tbd(self):
         schedule = new_schedule()
         startDate = datetime.date(2022, 8, 30)
-        add(
+        add_to_schedule(
             schedule,
             Recurrence(what="replace water filter", period=Period(months=2)),
             startDate,
         )
-        add(
+        add_to_schedule(
             schedule,
             Recurrence(what="change toothbrush", period=Period(months=6)),
             startDate,
         )
-        add(schedule, Recurrence(what="change oil", period=Period(months=4)), startDate)
+        add_to_schedule(
+            schedule, Recurrence(what="change oil", period=Period(months=4)), startDate
+        )
         file = FileStub()
         print(schedule, file=file)
         self.assertEqual(

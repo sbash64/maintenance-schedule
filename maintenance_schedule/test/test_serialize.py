@@ -1,7 +1,12 @@
 import unittest
 import datetime
 
-from maintenance_schedule.remind import add, new_schedule, Recurrence, Period
+from maintenance_schedule.remind import (
+    add_to_schedule,
+    new_schedule,
+    Recurrence,
+    Period,
+)
 from maintenance_schedule.persistence import deserialize, serialize
 
 
@@ -39,20 +44,21 @@ class SerializeTestCase(unittest.TestCase):
             schedule.nextActions[2].recurrence.what, "get quotes for driveway"
         )
         self.assertEqual(schedule.nextActions[2].recurrence.period.years, 2)
+        self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 8, 30))
 
     def test_tbd2(self):
         schedule = new_schedule()
-        add(
+        add_to_schedule(
             schedule,
             Recurrence(what="replace furnace filter", period=Period(months=6)),
             datetime.date(2022, 8, 30),
         )
-        add(
+        add_to_schedule(
             schedule,
             Recurrence(what="clean water bowl", period=Period(months=1)),
             datetime.date(2022, 8, 30),
         )
-        add(
+        add_to_schedule(
             schedule,
             Recurrence(what="service mower blade", period=Period(years=1)),
             datetime.date(2022, 8, 30),

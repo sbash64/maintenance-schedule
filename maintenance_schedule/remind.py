@@ -19,7 +19,7 @@ class NextAction(NamedTuple):
     startDate: date
     recurrence: Recurrence
 
-    def date(self):
+    def date(self) -> date:
         return self.startDate + relativedelta(
             years=self.recurrence.period.years, months=self.recurrence.period.months
         )
@@ -43,7 +43,7 @@ def new_schedule() -> Schedule:
     return Schedule()
 
 
-def add(schedule: Schedule, recurrence: Recurrence, startDate: date):
+def add_to_schedule(schedule: Schedule, recurrence: Recurrence, startDate: date):
     bisect.insort(
         schedule.nextActions,
         NextAction(recurrence=recurrence, startDate=startDate),

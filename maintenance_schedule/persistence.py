@@ -1,7 +1,13 @@
 import re
 import datetime
 
-from maintenance_schedule.remind import Schedule, new_schedule, add, Recurrence, Period
+from maintenance_schedule.remind import (
+    Schedule,
+    new_schedule,
+    add_to_schedule,
+    Recurrence,
+    Period,
+)
 
 
 def deserialize(file) -> Schedule:
@@ -15,7 +21,7 @@ def deserialize(file) -> Schedule:
             period = Period(months=int(matches.group(1)))
         else:
             period = Period(years=int(matches.group(1)))
-        add(
+        add_to_schedule(
             schedule,
             Recurrence(what=matches.group(6), period=period),
             datetime.date(
@@ -28,13 +34,14 @@ def deserialize(file) -> Schedule:
 def serialize(schedule: Schedule, file):
     for action in schedule.nextActions:
         if action.recurrence.period.months > 0:
-            time = "{} month".format(action.recurrence.period.months)
-            if action.recurrence.period.months > 1:
-                time += "s"
+            time_unit = "month"
+            time_quantity = action.recurrence.period.months
         else:
-            time = "{} year".format(action.recurrence.period.years)
-            if action.recurrence.period.years > 1:
-                time += "s"
+            time_unit = "year"
+            time_quantity = action.recurrence.period.years
+        time = "{} {}".format(time_quantity, time_unit)
+        if time_quantity > 1:
+            time += "s"
         print(
             "in {} from {:02}/{:02}/{:04} {}".format(
                 time,
