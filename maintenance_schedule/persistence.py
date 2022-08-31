@@ -13,7 +13,7 @@ from maintenance_schedule.remind import (
 def deserialize(file) -> Schedule:
     schedule = new_schedule()
     pattern = re.compile(
-        "in ([0-9]+) (month|year)s from ([0-9]{2})/([0-9]{2})/([0-9]{4}) (.*)"
+        "in ([0-9]+) (month|year)s? from ([0-9]{2})/([0-9]{2})/([0-9]{4}) (.*)"
     )
     for line in file:
         matches = pattern.match(line)

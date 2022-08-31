@@ -46,6 +46,11 @@ class SerializeTestCase(unittest.TestCase):
         self.assertEqual(schedule.nextActions[2].recurrence.period.years, 2)
         self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 8, 30))
 
+    def test_deserialize_one_month(self):
+        file = FileStub(["in 1 month from 08/31/2022 clean toilet"])
+        schedule = deserialize(file)
+        self.assertEqual(schedule.nextActions[0].recurrence.period.months, 1)
+
     def test_tbd2(self):
         schedule = new_schedule()
         add_to_schedule(
