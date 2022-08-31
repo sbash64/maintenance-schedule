@@ -18,7 +18,7 @@ class FileStub:
 
 
 class PrintTestCase(unittest.TestCase):
-    def test_tbd(self):
+    def test_print(self):
         schedule = new_schedule()
         startDate = datetime.date(2022, 8, 30)
         add_to_schedule(

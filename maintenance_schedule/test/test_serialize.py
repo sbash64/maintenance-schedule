@@ -23,7 +23,7 @@ class FileStub:
 
 
 class SerializeTestCase(unittest.TestCase):
-    def test_tbd(self):
+    def test_deserialize(self):
         file = FileStub(
             [
                 "in 2 months from 08/30/2022 change vacuum filter",
@@ -51,7 +51,7 @@ class SerializeTestCase(unittest.TestCase):
         schedule = deserialize(file)
         self.assertEqual(schedule.nextActions[0].recurrence.period.months, 1)
 
-    def test_tbd2(self):
+    def test_serialize(self):
         schedule = new_schedule()
         add_to_schedule(
             schedule,
