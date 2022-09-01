@@ -1,32 +1,34 @@
-import asyncio
-import websockets
+from aiohttp import web
+import aiohttp
 
 
-async def handle_websocket(websocket):
-    async for message in websocket:
-        await websocket.send(message)
+async def handle(request):
+    return web.FileResponse("index.html")
 
 
-async def serve_websocket():
-    async with websockets.serve(handle_websocket, port=8001):
-        await asyncio.Future()
+async def websocket_handler(request):
+
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
+
+    async for msg in ws:
+        if msg.type == aiohttp.WSMsgType.TEXT:
+            if msg.data == "close":
+                await ws.close()
+            else:
+                await ws.send_str(msg.data + "/answer")
+        elif msg.type == aiohttp.WSMsgType.ERROR:
+            print("ws connection closed with exception %s" % ws.exception())
+
+    print("websocket connection closed")
+
+    return ws
 
 
-async def handle_tcp(reader, writer):
-    data = await reader.read(100)
-    writer.write(data)
-    await writer.drain()
-    writer.close()
+app = web.Application()
+app.add_routes([web.get("/", lambda request: web.FileResponse("index.html"))])
+app.add_routes([web.get("/browser.js", lambda request: web.FileResponse("browser.js"))])
+app.add_routes([web.get("/ws", websocket_handler)])
 
-
-async def serve_tcp():
-    server = await asyncio.start_server(handle_tcp, port=8000)
-    async with server:
-        await server.serve_forever()
-
-
-async def main():
-    await asyncio.gather(serve_tcp(), serve_websocket())
-
-
-asyncio.run(main())
+if __name__ == "__main__":
+    web.run_app(app)
