@@ -1,11 +1,16 @@
 function parseWebsocketMessage(event, serverMessage) {
-serverMessage.textContent = event.data;
+	serverMessage.textContent = event.data;
 }
 
 const websocket = new WebSocket(`ws://${window.location.host}/ws`);
 
 serverMessage = document.createElement("div");
 websocket.onmessage = (event) => { parseWebsocketMessage(event, serverMessage); };
+
+const addToScheduleControls = document.createElement("div")
+addToScheduleControls.style.display = "flex"
+addToScheduleControls.style.flexDirection = "column"
+addToScheduleControls.style.alignItems = "flex-end"
 
 const monthsLabel = document.createElement("label")
 monthsLabel.textContent = "months"
@@ -30,11 +35,12 @@ button.onclick = () => { websocket.send(JSON.stringify({
 	years: yearsInput.value
 })); };
 
+document.body.append(addToScheduleControls)
 document.body.append(serverMessage)
-document.body.append(whatLabel)
+addToScheduleControls.append(whatLabel)
 whatLabel.append(whatInput)
-document.body.append(monthsLabel)
+addToScheduleControls.append(monthsLabel)
 monthsLabel.append(monthsInput)
-document.body.append(yearsLabel)
+addToScheduleControls.append(yearsLabel)
 yearsLabel.append(yearsInput)
-document.body.append(button)
+addToScheduleControls.append(button)
