@@ -13,11 +13,13 @@ from maintenance_schedule.remind import (
 def deserialize(file) -> Schedule:
     schedule = new_schedule()
     pattern = re.compile(
-        "in ([0-9]+) (month|year)s? from ([0-9]{2})/([0-9]{2})/([0-9]{4}) (.*)"
+        "in ([0-9]+) (day|month|year)s? from ([0-9]{2})/([0-9]{2})/([0-9]{4}) (.*)"
     )
     for line in file:
         matches = pattern.match(line)
-        if matches.group(2) == "month":
+        if matches.group(2) == "day":
+            period = Period(days=int(matches.group(1)))
+        elif matches.group(2) == "month":
             period = Period(months=int(matches.group(1)))
         else:
             period = Period(years=int(matches.group(1)))

@@ -29,6 +29,7 @@ class SerializeTestCase(unittest.TestCase):
                 "in 2 months from 08/30/2022 change vacuum filter",
                 "in 4 months from 08/30/2022 change mower oil",
                 "in 2 years from 08/30/2022 get quotes for driveway",
+                "in 90 days from 09/03/2022 refill prescription",
             ]
         )
         schedule = deserialize(file)
@@ -37,14 +38,17 @@ class SerializeTestCase(unittest.TestCase):
         )
         self.assertEqual(schedule.nextActions[0].recurrence.period.months, 2)
         self.assertEqual(schedule.nextActions[0].startDate, datetime.date(2022, 8, 30))
-        self.assertEqual(schedule.nextActions[1].recurrence.what, "change mower oil")
-        self.assertEqual(schedule.nextActions[1].recurrence.period.months, 4)
-        self.assertEqual(schedule.nextActions[1].startDate, datetime.date(2022, 8, 30))
-        self.assertEqual(
-            schedule.nextActions[2].recurrence.what, "get quotes for driveway"
-        )
-        self.assertEqual(schedule.nextActions[2].recurrence.period.years, 2)
+        self.assertEqual(schedule.nextActions[2].recurrence.what, "change mower oil")
+        self.assertEqual(schedule.nextActions[2].recurrence.period.months, 4)
         self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 8, 30))
+        self.assertEqual(
+            schedule.nextActions[3].recurrence.what, "get quotes for driveway"
+        )
+        self.assertEqual(schedule.nextActions[3].recurrence.period.years, 2)
+        self.assertEqual(schedule.nextActions[3].startDate, datetime.date(2022, 8, 30))
+        self.assertEqual(schedule.nextActions[1].recurrence.what, "refill prescription")
+        self.assertEqual(schedule.nextActions[1].recurrence.period.days, 90)
+        self.assertEqual(schedule.nextActions[1].startDate, datetime.date(2022, 9, 3))
 
     def test_deserialize_one_month(self):
         file = FileStub(["in 1 month from 08/31/2022 clean toilet"])

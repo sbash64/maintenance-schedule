@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 class Period(NamedTuple):
     months: int = 0
     years: int = 0
+    days: int = 0
 
 
 class Recurrence(NamedTuple):
@@ -21,7 +22,9 @@ class NextAction(NamedTuple):
 
     def date(self) -> date:
         return self.startDate + relativedelta(
-            years=self.recurrence.period.years, months=self.recurrence.period.months
+            years=self.recurrence.period.years,
+            months=self.recurrence.period.months,
+            days=self.recurrence.period.days,
         )
 
     def __lt__(self, other):
