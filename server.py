@@ -7,7 +7,7 @@ import aiohttp
 
 from maintenance_schedule.remind import (
     Period,
-    Recurrence,
+    Maintenance,
     new_schedule,
     add_to_schedule,
 )
@@ -25,7 +25,7 @@ async def websocket_handler(request):
                 decoded = json.loads(msg.data)
                 add_to_schedule(
                     schedule,
-                    Recurrence(
+                    Maintenance(
                         what=decoded["what"],
                         period=Period(
                             months=int(decoded["months"]), years=int(decoded["years"])

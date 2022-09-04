@@ -5,7 +5,7 @@ from maintenance_schedule.remind import (
     Schedule,
     new_schedule,
     add_to_schedule,
-    Recurrence,
+    Maintenance,
     Period,
 )
 
@@ -25,7 +25,7 @@ def deserialize(file) -> Schedule:
             period = Period(years=int(matches.group(1)))
         add_to_schedule(
             schedule,
-            Recurrence(what=matches.group(6), period=period),
+            Maintenance(what=matches.group(6), period=period),
             datetime.date(
                 int(matches.group(5)), int(matches.group(3)), int(matches.group(4))
             ),
@@ -35,12 +35,12 @@ def deserialize(file) -> Schedule:
 
 def serialize(schedule: Schedule, file):
     for action in schedule.nextActions:
-        if action.recurrence.period.months > 0:
+        if action.maintenance.period.months > 0:
             time_unit = "month"
-            time_quantity = action.recurrence.period.months
+            time_quantity = action.maintenance.period.months
         else:
             time_unit = "year"
-            time_quantity = action.recurrence.period.years
+            time_quantity = action.maintenance.period.years
         time = "{} {}".format(time_quantity, time_unit)
         if time_quantity > 1:
             time += "s"
@@ -50,7 +50,7 @@ def serialize(schedule: Schedule, file):
                 action.startDate.month,
                 action.startDate.day,
                 action.startDate.year,
-                action.recurrence.what,
+                action.maintenance.what,
             ),
             file=file,
         )

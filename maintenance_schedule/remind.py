@@ -11,29 +11,29 @@ class Period(NamedTuple):
     years: int = 0
 
 
-class Recurrence(NamedTuple):
+class Maintenance(NamedTuple):
     what: str
     period: Period
 
 
 class NextAction(NamedTuple):
     startDate: date
-    recurrence: Recurrence
+    maintenance: Maintenance
 
     def __lt__(self, other):
         return action_date(self) < action_date(other)
 
     def __repr__(self):
         return "{} - {}".format(
-            action_date(self).strftime("%B %d, %Y"), self.recurrence.what
+            action_date(self).strftime("%B %d, %Y"), self.maintenance.what
         )
 
 
 def action_date(nextAction: NextAction) -> date:
     return nextAction.startDate + relativedelta(
-        years=nextAction.recurrence.period.years,
-        months=nextAction.recurrence.period.months,
-        days=nextAction.recurrence.period.days,
+        years=nextAction.maintenance.period.years,
+        months=nextAction.maintenance.period.months,
+        days=nextAction.maintenance.period.days,
     )
 
 
@@ -49,8 +49,8 @@ def new_schedule() -> Schedule:
     return Schedule()
 
 
-def add_to_schedule(schedule: Schedule, recurrence: Recurrence, startDate: date):
+def add_to_schedule(schedule: Schedule, maintenance: Maintenance, startDate: date):
     bisect.insort(
         schedule.nextActions,
-        NextAction(recurrence=recurrence, startDate=startDate),
+        NextAction(maintenance=maintenance, startDate=startDate),
     )

@@ -4,7 +4,7 @@ import datetime
 from maintenance_schedule.remind import (
     add_to_schedule,
     new_schedule,
-    Recurrence,
+    Maintenance,
     Period,
 )
 from maintenance_schedule.persistence import deserialize, serialize
@@ -34,42 +34,44 @@ class SerializeTestCase(unittest.TestCase):
         )
         schedule = deserialize(file)
         self.assertEqual(
-            schedule.nextActions[0].recurrence.what, "change vacuum filter"
+            schedule.nextActions[0].maintenance.what, "change vacuum filter"
         )
-        self.assertEqual(schedule.nextActions[0].recurrence.period.months, 2)
+        self.assertEqual(schedule.nextActions[0].maintenance.period.months, 2)
         self.assertEqual(schedule.nextActions[0].startDate, datetime.date(2022, 8, 30))
-        self.assertEqual(schedule.nextActions[2].recurrence.what, "change mower oil")
-        self.assertEqual(schedule.nextActions[2].recurrence.period.months, 4)
+        self.assertEqual(schedule.nextActions[2].maintenance.what, "change mower oil")
+        self.assertEqual(schedule.nextActions[2].maintenance.period.months, 4)
         self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 8, 30))
         self.assertEqual(
-            schedule.nextActions[3].recurrence.what, "get quotes for driveway"
+            schedule.nextActions[3].maintenance.what, "get quotes for driveway"
         )
-        self.assertEqual(schedule.nextActions[3].recurrence.period.years, 2)
+        self.assertEqual(schedule.nextActions[3].maintenance.period.years, 2)
         self.assertEqual(schedule.nextActions[3].startDate, datetime.date(2022, 8, 30))
-        self.assertEqual(schedule.nextActions[1].recurrence.what, "refill prescription")
-        self.assertEqual(schedule.nextActions[1].recurrence.period.days, 90)
+        self.assertEqual(
+            schedule.nextActions[1].maintenance.what, "refill prescription"
+        )
+        self.assertEqual(schedule.nextActions[1].maintenance.period.days, 90)
         self.assertEqual(schedule.nextActions[1].startDate, datetime.date(2022, 9, 3))
 
     def test_deserialize_one_month(self):
         file = FileStub(["in 1 month from 08/31/2022 clean toilet"])
         schedule = deserialize(file)
-        self.assertEqual(schedule.nextActions[0].recurrence.period.months, 1)
+        self.assertEqual(schedule.nextActions[0].maintenance.period.months, 1)
 
     def test_serialize(self):
         schedule = new_schedule()
         add_to_schedule(
             schedule,
-            Recurrence(what="replace furnace filter", period=Period(months=6)),
+            Maintenance(what="replace furnace filter", period=Period(months=6)),
             datetime.date(2022, 8, 30),
         )
         add_to_schedule(
             schedule,
-            Recurrence(what="clean water bowl", period=Period(months=1)),
+            Maintenance(what="clean water bowl", period=Period(months=1)),
             datetime.date(2022, 8, 30),
         )
         add_to_schedule(
             schedule,
-            Recurrence(what="service mower blade", period=Period(years=1)),
+            Maintenance(what="service mower blade", period=Period(years=1)),
             datetime.date(2022, 8, 30),
         )
         file = FileStub([])

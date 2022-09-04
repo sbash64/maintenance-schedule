@@ -2,7 +2,7 @@ import unittest
 import datetime
 
 from maintenance_schedule.remind import (
-    Recurrence,
+    Maintenance,
     Period,
     new_schedule,
     add_to_schedule,
@@ -23,16 +23,16 @@ class PrintTestCase(unittest.TestCase):
         startDate = datetime.date(2022, 8, 30)
         add_to_schedule(
             schedule,
-            Recurrence(what="replace water filter", period=Period(months=2)),
+            Maintenance(what="replace water filter", period=Period(months=2)),
             startDate,
         )
         add_to_schedule(
             schedule,
-            Recurrence(what="change toothbrush", period=Period(months=6)),
+            Maintenance(what="change toothbrush", period=Period(months=6)),
             startDate,
         )
         add_to_schedule(
-            schedule, Recurrence(what="change oil", period=Period(months=4)), startDate
+            schedule, Maintenance(what="change oil", period=Period(months=4)), startDate
         )
         file = FileStub()
         print(schedule, file=file)
