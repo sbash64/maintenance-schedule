@@ -26,12 +26,12 @@ add_to_schedule(
 )
 print(schedule)
 
-with open("schedule.txt", "w") as file:
+with open("schedule.txt", "w", encoding="utf-8") as file:
     serialize(schedule, file)
 
 # Later...
 
-with open("schedule.txt") as file:
+with open("schedule.txt", encoding="utf-8") as file:
     schedule = deserialize(file)
 
 print(schedule)

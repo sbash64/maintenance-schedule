@@ -24,9 +24,8 @@ class ScheduledMaintenance(NamedTuple):
         return action_date(self) < action_date(other)
 
     def __repr__(self):
-        return "{} - {}".format(
-            action_date(self).strftime("%B %d, %Y"), self.maintenance.what
-        )
+        when = action_date(self).strftime("%B %d, %Y")
+        return f"{when} - {self.maintenance.what}"
 
 
 def action_date(scheduled_maintenance: ScheduledMaintenance) -> date:

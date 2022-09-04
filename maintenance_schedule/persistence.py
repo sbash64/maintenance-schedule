@@ -41,16 +41,10 @@ def serialize(schedule: Schedule, file):
         else:
             time_unit = "year"
             time_quantity = scheduled_maintenance.maintenance.how_often.years
-        time = "{} {}".format(time_quantity, time_unit)
+        time = f"{time_quantity} {time_unit}"
         if time_quantity > 1:
             time += "s"
         print(
-            "in {} from {:02}/{:02}/{:04} {}".format(
-                time,
-                scheduled_maintenance.from_date.month,
-                scheduled_maintenance.from_date.day,
-                scheduled_maintenance.from_date.year,
-                scheduled_maintenance.maintenance.what,
-            ),
+            f"in {time} from {scheduled_maintenance.from_date.month:02}/{scheduled_maintenance.from_date.day:02}/{scheduled_maintenance.from_date.year:04} {scheduled_maintenance.maintenance.what}",
             file=file,
         )

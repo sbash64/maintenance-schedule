@@ -20,21 +20,21 @@ class FileStub:
 class PrintTestCase(unittest.TestCase):
     def test_print(self):
         schedule = new_schedule()
-        startDate = datetime.date(2022, 8, 30)
+        from_date = datetime.date(2022, 8, 30)
         add_to_schedule(
             schedule,
             Maintenance(what="replace water filter", how_often=HowOften(months=2)),
-            startDate,
+            from_date,
         )
         add_to_schedule(
             schedule,
             Maintenance(what="change toothbrush", how_often=HowOften(months=6)),
-            startDate,
+            from_date,
         )
         add_to_schedule(
             schedule,
             Maintenance(what="change oil", how_often=HowOften(months=4)),
-            startDate,
+            from_date,
         )
         file = FileStub()
         print(schedule, file=file)
