@@ -6,7 +6,7 @@ from aiohttp import web
 import aiohttp
 
 from maintenance_schedule.remind import (
-    Period,
+    HowOften,
     Maintenance,
     new_schedule,
     add_to_schedule,
@@ -27,7 +27,7 @@ async def websocket_handler(request):
                     schedule,
                     Maintenance(
                         what=decoded["what"],
-                        period=Period(
+                        howOften=HowOften(
                             months=int(decoded["months"]), years=int(decoded["years"])
                         ),
                     ),
