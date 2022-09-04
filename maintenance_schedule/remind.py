@@ -54,3 +54,10 @@ def add_to_schedule(schedule: Schedule, maintenance: Maintenance, startDate: dat
         schedule.nextActions,
         NextAction(maintenance=maintenance, startDate=startDate),
     )
+
+
+def renew_maintenance(schedule: Schedule, what: str, startDate: date):
+    for i, action in enumerate(schedule.nextActions):
+        if action.maintenance.what == what:
+            schedule.nextActions[i] = action._replace(startDate=startDate)
+            return
