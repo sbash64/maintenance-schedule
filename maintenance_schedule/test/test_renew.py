@@ -29,4 +29,6 @@ class RenewTestCase(unittest.TestCase):
             datetime.date(2022, 2, 5),
         )
         renew_maintenance(schedule, "wash vacuum filters", datetime.date(2022, 10, 31))
-        self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 10, 31))
+        self.assertEqual(
+            schedule.scheduled_maintenances[2].startDate, datetime.date(2022, 10, 31)
+        )

@@ -18,14 +18,14 @@ def deserialize(file) -> Schedule:
     for line in file:
         matches = pattern.match(line)
         if matches.group(2) == "day":
-            howOften = HowOften(days=int(matches.group(1)))
+            how_often = HowOften(days=int(matches.group(1)))
         elif matches.group(2) == "month":
-            howOften = HowOften(months=int(matches.group(1)))
+            how_often = HowOften(months=int(matches.group(1)))
         else:
-            howOften = HowOften(years=int(matches.group(1)))
+            how_often = HowOften(years=int(matches.group(1)))
         add_to_schedule(
             schedule,
-            Maintenance(what=matches.group(6), howOften=howOften),
+            Maintenance(what=matches.group(6), howOften=how_often),
             datetime.date(
                 int(matches.group(5)), int(matches.group(3)), int(matches.group(4))
             ),
@@ -34,23 +34,23 @@ def deserialize(file) -> Schedule:
 
 
 def serialize(schedule: Schedule, file):
-    for action in schedule.nextActions:
-        if action.maintenance.howOften.months > 0:
+    for scheduled_maintenance in schedule.scheduled_maintenances:
+        if scheduled_maintenance.maintenance.howOften.months > 0:
             time_unit = "month"
-            time_quantity = action.maintenance.howOften.months
+            time_quantity = scheduled_maintenance.maintenance.howOften.months
         else:
             time_unit = "year"
-            time_quantity = action.maintenance.howOften.years
+            time_quantity = scheduled_maintenance.maintenance.howOften.years
         time = "{} {}".format(time_quantity, time_unit)
         if time_quantity > 1:
             time += "s"
         print(
             "in {} from {:02}/{:02}/{:04} {}".format(
                 time,
-                action.startDate.month,
-                action.startDate.day,
-                action.startDate.year,
-                action.maintenance.what,
+                scheduled_maintenance.startDate.month,
+                scheduled_maintenance.startDate.day,
+                scheduled_maintenance.startDate.year,
+                scheduled_maintenance.maintenance.what,
             ),
             file=file,
         )

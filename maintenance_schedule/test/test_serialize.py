@@ -34,28 +34,49 @@ class SerializeTestCase(unittest.TestCase):
         )
         schedule = deserialize(file)
         self.assertEqual(
-            schedule.nextActions[0].maintenance.what, "change vacuum filter"
+            schedule.scheduled_maintenances[0].maintenance.what, "change vacuum filter"
         )
-        self.assertEqual(schedule.nextActions[0].maintenance.howOften.months, 2)
-        self.assertEqual(schedule.nextActions[0].startDate, datetime.date(2022, 8, 30))
-        self.assertEqual(schedule.nextActions[2].maintenance.what, "change mower oil")
-        self.assertEqual(schedule.nextActions[2].maintenance.howOften.months, 4)
-        self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 8, 30))
         self.assertEqual(
-            schedule.nextActions[3].maintenance.what, "get quotes for driveway"
+            schedule.scheduled_maintenances[0].maintenance.howOften.months, 2
         )
-        self.assertEqual(schedule.nextActions[3].maintenance.howOften.years, 2)
-        self.assertEqual(schedule.nextActions[3].startDate, datetime.date(2022, 8, 30))
         self.assertEqual(
-            schedule.nextActions[1].maintenance.what, "refill prescription"
+            schedule.scheduled_maintenances[0].startDate, datetime.date(2022, 8, 30)
         )
-        self.assertEqual(schedule.nextActions[1].maintenance.howOften.days, 90)
-        self.assertEqual(schedule.nextActions[1].startDate, datetime.date(2022, 9, 3))
+        self.assertEqual(
+            schedule.scheduled_maintenances[2].maintenance.what, "change mower oil"
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[2].maintenance.howOften.months, 4
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[2].startDate, datetime.date(2022, 8, 30)
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[3].maintenance.what,
+            "get quotes for driveway",
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[3].maintenance.howOften.years, 2
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[3].startDate, datetime.date(2022, 8, 30)
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[1].maintenance.what, "refill prescription"
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[1].maintenance.howOften.days, 90
+        )
+        self.assertEqual(
+            schedule.scheduled_maintenances[1].startDate, datetime.date(2022, 9, 3)
+        )
 
     def test_deserialize_one_month(self):
         file = FileStub(["in 1 month from 08/31/2022 clean toilet"])
         schedule = deserialize(file)
-        self.assertEqual(schedule.nextActions[0].maintenance.howOften.months, 1)
+        self.assertEqual(
+            schedule.scheduled_maintenances[0].maintenance.howOften.months, 1
+        )
 
     def test_serialize(self):
         schedule = new_schedule()

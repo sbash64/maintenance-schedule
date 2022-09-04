@@ -16,7 +16,7 @@ class Maintenance(NamedTuple):
     howOften: HowOften
 
 
-class NextAction(NamedTuple):
+class ScheduledMaintenance(NamedTuple):
     startDate: date
     maintenance: Maintenance
 
@@ -29,20 +29,22 @@ class NextAction(NamedTuple):
         )
 
 
-def action_date(nextAction: NextAction) -> date:
-    return nextAction.startDate + relativedelta(
-        years=nextAction.maintenance.howOften.years,
-        months=nextAction.maintenance.howOften.months,
-        days=nextAction.maintenance.howOften.days,
+def action_date(scheduled_maintenance: ScheduledMaintenance) -> date:
+    return scheduled_maintenance.startDate + relativedelta(
+        years=scheduled_maintenance.maintenance.howOften.years,
+        months=scheduled_maintenance.maintenance.howOften.months,
+        days=scheduled_maintenance.maintenance.howOften.days,
     )
 
 
 class Schedule:
     def __init__(self):
-        self.nextActions: List[NextAction] = []
+        self.scheduled_maintenances: List[ScheduledMaintenance] = []
 
     def __str__(self):
-        return ("{}" + "\n{}" * (len(self.nextActions) - 1)).format(*self.nextActions)
+        return ("{}" + "\n{}" * (len(self.scheduled_maintenances) - 1)).format(
+            *self.scheduled_maintenances
+        )
 
 
 def new_schedule() -> Schedule:
@@ -51,13 +53,13 @@ def new_schedule() -> Schedule:
 
 def add_to_schedule(schedule: Schedule, maintenance: Maintenance, startDate: date):
     bisect.insort(
-        schedule.nextActions,
-        NextAction(maintenance=maintenance, startDate=startDate),
+        schedule.scheduled_maintenances,
+        ScheduledMaintenance(maintenance=maintenance, startDate=startDate),
     )
 
 
 def renew_maintenance(schedule: Schedule, what: str, startDate: date):
-    for i, action in enumerate(schedule.nextActions):
+    for i, action in enumerate(schedule.scheduled_maintenances):
         if action.maintenance.what == what:
-            schedule.nextActions[i] = action._replace(startDate=startDate)
+            schedule.scheduled_maintenances[i] = action._replace(startDate=startDate)
             return
