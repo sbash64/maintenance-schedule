@@ -5,7 +5,7 @@ from maintenance_schedule.remind import (
     add_to_schedule,
     new_schedule,
     Maintenance,
-    Period,
+    HowOften,
 )
 from maintenance_schedule.persistence import deserialize, serialize
 
@@ -36,42 +36,42 @@ class SerializeTestCase(unittest.TestCase):
         self.assertEqual(
             schedule.nextActions[0].maintenance.what, "change vacuum filter"
         )
-        self.assertEqual(schedule.nextActions[0].maintenance.when.months, 2)
+        self.assertEqual(schedule.nextActions[0].maintenance.howOften.months, 2)
         self.assertEqual(schedule.nextActions[0].startDate, datetime.date(2022, 8, 30))
         self.assertEqual(schedule.nextActions[2].maintenance.what, "change mower oil")
-        self.assertEqual(schedule.nextActions[2].maintenance.when.months, 4)
+        self.assertEqual(schedule.nextActions[2].maintenance.howOften.months, 4)
         self.assertEqual(schedule.nextActions[2].startDate, datetime.date(2022, 8, 30))
         self.assertEqual(
             schedule.nextActions[3].maintenance.what, "get quotes for driveway"
         )
-        self.assertEqual(schedule.nextActions[3].maintenance.when.years, 2)
+        self.assertEqual(schedule.nextActions[3].maintenance.howOften.years, 2)
         self.assertEqual(schedule.nextActions[3].startDate, datetime.date(2022, 8, 30))
         self.assertEqual(
             schedule.nextActions[1].maintenance.what, "refill prescription"
         )
-        self.assertEqual(schedule.nextActions[1].maintenance.when.days, 90)
+        self.assertEqual(schedule.nextActions[1].maintenance.howOften.days, 90)
         self.assertEqual(schedule.nextActions[1].startDate, datetime.date(2022, 9, 3))
 
     def test_deserialize_one_month(self):
         file = FileStub(["in 1 month from 08/31/2022 clean toilet"])
         schedule = deserialize(file)
-        self.assertEqual(schedule.nextActions[0].maintenance.when.months, 1)
+        self.assertEqual(schedule.nextActions[0].maintenance.howOften.months, 1)
 
     def test_serialize(self):
         schedule = new_schedule()
         add_to_schedule(
             schedule,
-            Maintenance(what="replace furnace filter", when=Period(months=6)),
+            Maintenance(what="replace furnace filter", howOften=HowOften(months=6)),
             datetime.date(2022, 8, 30),
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="clean water bowl", when=Period(months=1)),
+            Maintenance(what="clean water bowl", howOften=HowOften(months=1)),
             datetime.date(2022, 8, 30),
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="service mower blade", when=Period(years=1)),
+            Maintenance(what="service mower blade", howOften=HowOften(years=1)),
             datetime.date(2022, 8, 30),
         )
         file = FileStub([])

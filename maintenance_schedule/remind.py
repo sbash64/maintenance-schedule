@@ -5,7 +5,7 @@ import bisect
 from dateutil.relativedelta import relativedelta
 
 
-class Period(NamedTuple):
+class HowOften(NamedTuple):
     days: int = 0
     months: int = 0
     years: int = 0
@@ -13,7 +13,7 @@ class Period(NamedTuple):
 
 class Maintenance(NamedTuple):
     what: str
-    when: Period
+    howOften: HowOften
 
 
 class NextAction(NamedTuple):
@@ -31,9 +31,9 @@ class NextAction(NamedTuple):
 
 def action_date(nextAction: NextAction) -> date:
     return nextAction.startDate + relativedelta(
-        years=nextAction.maintenance.when.years,
-        months=nextAction.maintenance.when.months,
-        days=nextAction.maintenance.when.days,
+        years=nextAction.maintenance.howOften.years,
+        months=nextAction.maintenance.howOften.months,
+        days=nextAction.maintenance.howOften.days,
     )
 
 
