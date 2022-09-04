@@ -23,17 +23,17 @@ class PrintTestCase(unittest.TestCase):
         startDate = datetime.date(2022, 8, 30)
         add_to_schedule(
             schedule,
-            Maintenance(what="replace water filter", howOften=HowOften(months=2)),
+            Maintenance(what="replace water filter", how_often=HowOften(months=2)),
             startDate,
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="change toothbrush", howOften=HowOften(months=6)),
+            Maintenance(what="change toothbrush", how_often=HowOften(months=6)),
             startDate,
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="change oil", howOften=HowOften(months=4)),
+            Maintenance(what="change oil", how_often=HowOften(months=4)),
             startDate,
         )
         file = FileStub()

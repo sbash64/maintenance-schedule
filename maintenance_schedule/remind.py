@@ -13,11 +13,11 @@ class HowOften(NamedTuple):
 
 class Maintenance(NamedTuple):
     what: str
-    howOften: HowOften
+    how_often: HowOften
 
 
 class ScheduledMaintenance(NamedTuple):
-    startDate: date
+    from_date: date
     maintenance: Maintenance
 
     def __lt__(self, other):
@@ -30,10 +30,10 @@ class ScheduledMaintenance(NamedTuple):
 
 
 def action_date(scheduled_maintenance: ScheduledMaintenance) -> date:
-    return scheduled_maintenance.startDate + relativedelta(
-        years=scheduled_maintenance.maintenance.howOften.years,
-        months=scheduled_maintenance.maintenance.howOften.months,
-        days=scheduled_maintenance.maintenance.howOften.days,
+    return scheduled_maintenance.from_date + relativedelta(
+        years=scheduled_maintenance.maintenance.how_often.years,
+        months=scheduled_maintenance.maintenance.how_often.months,
+        days=scheduled_maintenance.maintenance.how_often.days,
     )
 
 
@@ -51,15 +51,17 @@ def new_schedule() -> Schedule:
     return Schedule()
 
 
-def add_to_schedule(schedule: Schedule, maintenance: Maintenance, startDate: date):
+def add_to_schedule(schedule: Schedule, maintenance: Maintenance, from_date: date):
     bisect.insort(
         schedule.scheduled_maintenances,
-        ScheduledMaintenance(maintenance=maintenance, startDate=startDate),
+        ScheduledMaintenance(maintenance=maintenance, from_date=from_date),
     )
 
 
-def renew_maintenance(schedule: Schedule, what: str, startDate: date):
-    for i, action in enumerate(schedule.scheduled_maintenances):
-        if action.maintenance.what == what:
-            schedule.scheduled_maintenances[i] = action._replace(startDate=startDate)
+def renew_maintenance(schedule: Schedule, what: str, from_date: date):
+    for i, scheduled_maintenance in enumerate(schedule.scheduled_maintenances):
+        if scheduled_maintenance.maintenance.what == what:
+            schedule.scheduled_maintenances[i] = scheduled_maintenance._replace(
+                from_date=from_date
+            )
             return

@@ -15,20 +15,20 @@ class RenewTestCase(unittest.TestCase):
         schedule = new_schedule()
         add_to_schedule(
             schedule,
-            Maintenance(what="refill prescription", howOften=HowOften(days=90)),
+            Maintenance(what="refill prescription", how_often=HowOften(days=90)),
             datetime.date(2022, 7, 4),
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="wash vacuum filters", howOften=HowOften(months=2)),
+            Maintenance(what="wash vacuum filters", how_often=HowOften(months=2)),
             datetime.date(2022, 8, 20),
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="change oil", howOften=HowOften(months=4)),
+            Maintenance(what="change oil", how_often=HowOften(months=4)),
             datetime.date(2022, 2, 5),
         )
         renew_maintenance(schedule, "wash vacuum filters", datetime.date(2022, 10, 31))
         self.assertEqual(
-            schedule.scheduled_maintenances[2].startDate, datetime.date(2022, 10, 31)
+            schedule.scheduled_maintenances[2].from_date, datetime.date(2022, 10, 31)
         )

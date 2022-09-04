@@ -25,7 +25,7 @@ def deserialize(file) -> Schedule:
             how_often = HowOften(years=int(matches.group(1)))
         add_to_schedule(
             schedule,
-            Maintenance(what=matches.group(6), howOften=how_often),
+            Maintenance(what=matches.group(6), how_often=how_often),
             datetime.date(
                 int(matches.group(5)), int(matches.group(3)), int(matches.group(4))
             ),
@@ -35,21 +35,21 @@ def deserialize(file) -> Schedule:
 
 def serialize(schedule: Schedule, file):
     for scheduled_maintenance in schedule.scheduled_maintenances:
-        if scheduled_maintenance.maintenance.howOften.months > 0:
+        if scheduled_maintenance.maintenance.how_often.months > 0:
             time_unit = "month"
-            time_quantity = scheduled_maintenance.maintenance.howOften.months
+            time_quantity = scheduled_maintenance.maintenance.how_often.months
         else:
             time_unit = "year"
-            time_quantity = scheduled_maintenance.maintenance.howOften.years
+            time_quantity = scheduled_maintenance.maintenance.how_often.years
         time = "{} {}".format(time_quantity, time_unit)
         if time_quantity > 1:
             time += "s"
         print(
             "in {} from {:02}/{:02}/{:04} {}".format(
                 time,
-                scheduled_maintenance.startDate.month,
-                scheduled_maintenance.startDate.day,
-                scheduled_maintenance.startDate.year,
+                scheduled_maintenance.from_date.month,
+                scheduled_maintenance.from_date.day,
+                scheduled_maintenance.from_date.year,
                 scheduled_maintenance.maintenance.what,
             ),
             file=file,
