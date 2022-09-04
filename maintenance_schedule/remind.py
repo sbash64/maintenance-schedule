@@ -13,7 +13,7 @@ class Period(NamedTuple):
 
 class Maintenance(NamedTuple):
     what: str
-    period: Period
+    when: Period
 
 
 class NextAction(NamedTuple):
@@ -31,9 +31,9 @@ class NextAction(NamedTuple):
 
 def action_date(nextAction: NextAction) -> date:
     return nextAction.startDate + relativedelta(
-        years=nextAction.maintenance.period.years,
-        months=nextAction.maintenance.period.months,
-        days=nextAction.maintenance.period.days,
+        years=nextAction.maintenance.when.years,
+        months=nextAction.maintenance.when.months,
+        days=nextAction.maintenance.when.days,
     )
 
 

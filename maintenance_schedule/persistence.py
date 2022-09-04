@@ -18,14 +18,14 @@ def deserialize(file) -> Schedule:
     for line in file:
         matches = pattern.match(line)
         if matches.group(2) == "day":
-            period = Period(days=int(matches.group(1)))
+            when = Period(days=int(matches.group(1)))
         elif matches.group(2) == "month":
-            period = Period(months=int(matches.group(1)))
+            when = Period(months=int(matches.group(1)))
         else:
-            period = Period(years=int(matches.group(1)))
+            when = Period(years=int(matches.group(1)))
         add_to_schedule(
             schedule,
-            Maintenance(what=matches.group(6), period=period),
+            Maintenance(what=matches.group(6), when=when),
             datetime.date(
                 int(matches.group(5)), int(matches.group(3)), int(matches.group(4))
             ),
@@ -35,12 +35,12 @@ def deserialize(file) -> Schedule:
 
 def serialize(schedule: Schedule, file):
     for action in schedule.nextActions:
-        if action.maintenance.period.months > 0:
+        if action.maintenance.when.months > 0:
             time_unit = "month"
-            time_quantity = action.maintenance.period.months
+            time_quantity = action.maintenance.when.months
         else:
             time_unit = "year"
-            time_quantity = action.maintenance.period.years
+            time_quantity = action.maintenance.when.years
         time = "{} {}".format(time_quantity, time_unit)
         if time_quantity > 1:
             time += "s"
