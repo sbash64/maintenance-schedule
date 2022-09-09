@@ -39,6 +39,7 @@ button.onclick = () => {
   websocket.send(JSON.stringify({
     method: "add",
     what: whatInput.value,
+    days: daysInput.value,
     months: monthsInput.value,
     years: yearsInput.value,
   }));

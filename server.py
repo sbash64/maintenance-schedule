@@ -1,4 +1,3 @@
-import json
 import io
 import datetime
 
@@ -11,6 +10,7 @@ from maintenance_schedule.remind import (
     new_schedule,
     add_to_schedule,
 )
+from maintenance_schedule.parse import parse_maintenance
 
 
 async def websocket_handler(request):
@@ -22,15 +22,9 @@ async def websocket_handler(request):
             if msg.data == "close":
                 await ws.close()
             else:
-                decoded = json.loads(msg.data)
                 add_to_schedule(
                     schedule,
-                    Maintenance(
-                        what=decoded["what"],
-                        howOften=HowOften(
-                            months=int(decoded["months"]), years=int(decoded["years"])
-                        ),
-                    ),
+                    parse_maintenance(msg.data),
                     datetime.date.today(),
                 )
                 response = io.StringIO()
