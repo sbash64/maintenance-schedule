@@ -28,6 +28,11 @@ def parse_maintenance(message: str) -> Maintenance:
     )
 
 
-def parse_from_date(message: str) -> datetime.date:
+def parse_from_date(
+    message: str, default_date: datetime.date = datetime.date.today()
+) -> datetime.date:
     decoded = json.loads(message)
-    return datetime.date.fromisoformat(decoded["fromDate"])
+    try:
+        return datetime.date.fromisoformat(decoded["fromDate"])
+    except ValueError:
+        return default_date

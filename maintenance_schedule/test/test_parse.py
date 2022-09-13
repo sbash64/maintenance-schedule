@@ -20,3 +20,10 @@ class ParseTestCase(unittest.TestCase):
             '{"method":"add","what":"wash vacuum filters","fromDate":"2022-09-21","howOften":{"days":"","months":"2","years":""}}'
         )
         self.assertEqual(from_date, datetime.date(2022, 9, 21))
+
+    def test_from_date_default(self):
+        from_date = parse_from_date(
+            '{"method":"add","what":"wash vacuum filters","fromDate":"","howOften":{"days":"","months":"2","years":""}}',
+            datetime.date(2022, 3, 2),
+        )
+        self.assertEqual(from_date, datetime.date(2022, 3, 2))
