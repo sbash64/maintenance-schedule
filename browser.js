@@ -4,7 +4,7 @@ function parseWebsocketMessage(event, serverMessage) {
 
 const websocket = new WebSocket(`ws://${window.location.host}/ws`);
 
-serverMessage = document.createElement("div");
+serverMessage = document.createElement("pre");
 websocket.onmessage = (event) => {
   parseWebsocketMessage(event, serverMessage);
 };
