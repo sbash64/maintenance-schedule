@@ -1,4 +1,5 @@
 from typing import Dict
+import datetime
 import json
 
 from maintenance_schedule.remind import Maintenance, HowOften
@@ -25,3 +26,8 @@ def parse_maintenance(message: str) -> Maintenance:
         what=decoded["what"],
         how_often=parse_how_often(decoded["howOften"]),
     )
+
+
+def parse_from_date(message: str) -> datetime.date:
+    decoded = json.loads(message)
+    return datetime.date.fromisoformat(decoded["fromDate"])
