@@ -15,8 +15,8 @@ def parse_maintenance(message: str) -> Maintenance:
     return Maintenance(
         what=decoded["what"],
         how_often=HowOften(
-            days=to_int(decoded["days"]),
-            months=to_int(decoded["months"]),
-            years=to_int(decoded["years"]),
+            days=to_int(decoded["howOften"]["days"]),
+            months=to_int(decoded["howOften"]["months"]),
+            years=to_int(decoded["howOften"]["years"]),
         ),
     )
