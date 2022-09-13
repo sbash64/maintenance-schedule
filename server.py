@@ -5,8 +5,6 @@ from aiohttp import web
 import aiohttp
 
 from maintenance_schedule.remind import (
-    HowOften,
-    Maintenance,
     new_schedule,
     add_to_schedule,
 )
@@ -15,12 +13,12 @@ from maintenance_schedule.parse import parse_maintenance
 
 async def websocket_handler(request):
     schedule = new_schedule()
-    ws = web.WebSocketResponse()
-    await ws.prepare(request)
-    async for msg in ws:
+    websocket_response = web.WebSocketResponse()
+    await websocket_response.prepare(request)
+    async for msg in websocket_response:
         if msg.type == aiohttp.WSMsgType.TEXT:
             if msg.data == "close":
-                await ws.close()
+                await websocket_response.close()
             else:
                 add_to_schedule(
                     schedule,
@@ -29,17 +27,21 @@ async def websocket_handler(request):
                 )
                 response = io.StringIO()
                 print(schedule, file=response)
-                responseMessage = response.getvalue()
+                response_message = response.getvalue()
                 response.close()
-                await ws.send_str(responseMessage)
+                await websocket_response.send_str(response_message)
         elif msg.type == aiohttp.WSMsgType.ERROR:
-            print("ws connection closed with exception %s" % ws.exception())
+            print(
+                f"websocket connection closed with exception {websocket_response.exception()}"
+            )
     print("websocket connection closed")
-    return ws
+    return websocket_response
 
 
-app = web.Application()
-app.add_routes([web.get("/", lambda request: web.FileResponse("index.html"))])
-app.add_routes([web.get("/browser.js", lambda request: web.FileResponse("browser.js"))])
-app.add_routes([web.get("/ws", websocket_handler)])
-web.run_app(app)
+application = web.Application()
+application.add_routes([web.get("/", lambda request: web.FileResponse("index.html"))])
+application.add_routes(
+    [web.get("/browser.js", lambda request: web.FileResponse("browser.js"))]
+)
+application.add_routes([web.get("/ws", websocket_handler)])
+web.run_app(application)

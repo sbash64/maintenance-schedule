@@ -5,7 +5,7 @@ from maintenance_schedule.parse import parse_maintenance
 
 
 class ParseTestCase(unittest.TestCase):
-    def test_tbd(self):
+    def test_add(self):
         maintenance = parse_maintenance(
             '{"method":"add","what":"wash vacuum filters","days":"","months":"2","years":""}'
         )
