@@ -4,6 +4,7 @@ import datetime
 from maintenance_schedule.remind import (
     add_to_schedule,
     new_schedule,
+    find_scheduled_maintenance,
     Maintenance,
     HowOften,
 )
@@ -33,43 +34,18 @@ class SerializeTestCase(unittest.TestCase):
             ]
         )
         schedule = deserialize(file)
-        self.assertEqual(
-            schedule.scheduled_maintenances[0].maintenance.what, "change vacuum filter"
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[0].maintenance.how_often.months, 2
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[0].from_date, datetime.date(2022, 8, 30)
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[2].maintenance.what, "change mower oil"
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[2].maintenance.how_often.months, 4
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[2].from_date, datetime.date(2022, 8, 30)
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[3].maintenance.what,
-            "get quotes for driveway",
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[3].maintenance.how_often.years, 2
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[3].from_date, datetime.date(2022, 8, 30)
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[1].maintenance.what, "refill prescription"
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[1].maintenance.how_often.days, 90
-        )
-        self.assertEqual(
-            schedule.scheduled_maintenances[1].from_date, datetime.date(2022, 9, 3)
-        )
+        vacuum_filter = find_scheduled_maintenance(schedule, "change vacuum filter")
+        self.assertEqual(vacuum_filter.maintenance.how_often.months, 2)
+        self.assertEqual(vacuum_filter.from_date, datetime.date(2022, 8, 30))
+        mower_oil = find_scheduled_maintenance(schedule, "change mower oil")
+        self.assertEqual(mower_oil.maintenance.how_often.months, 4)
+        self.assertEqual(mower_oil.from_date, datetime.date(2022, 8, 30))
+        driveway = find_scheduled_maintenance(schedule, "get quotes for driveway")
+        self.assertEqual(driveway.maintenance.how_often.years, 2)
+        self.assertEqual(driveway.from_date, datetime.date(2022, 8, 30))
+        prescription = find_scheduled_maintenance(schedule, "refill prescription")
+        self.assertEqual(prescription.maintenance.how_often.days, 90)
+        self.assertEqual(prescription.from_date, datetime.date(2022, 9, 3))
 
     def test_deserialize_one_month(self):
         file = FileStub(["in 1 month from 08/31/2022 clean toilet"])

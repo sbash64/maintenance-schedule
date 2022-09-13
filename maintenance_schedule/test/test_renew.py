@@ -12,7 +12,7 @@ from maintenance_schedule.remind import (
 
 
 class RenewTestCase(unittest.TestCase):
-    def test_tbd(self):
+    def test_renews_maintenance(self):
         schedule = new_schedule()
         add_to_schedule(
             schedule,
