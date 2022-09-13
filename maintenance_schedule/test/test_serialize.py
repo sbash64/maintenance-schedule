@@ -50,9 +50,8 @@ class SerializeTestCase(unittest.TestCase):
     def test_deserialize_one_month(self):
         file = FileStub(["in 1 month from 08/31/2022 clean toilet"])
         schedule = deserialize(file)
-        self.assertEqual(
-            schedule.scheduled_maintenances[0].maintenance.how_often.months, 1
-        )
+        toilet = find_scheduled_maintenance(schedule, "clean toilet")
+        self.assertEqual(toilet.maintenance.how_often.months, 1)
 
     def test_serialize(self):
         schedule = new_schedule()
