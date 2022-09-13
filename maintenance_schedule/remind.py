@@ -57,6 +57,12 @@ def add_to_schedule(schedule: Schedule, maintenance: Maintenance, from_date: dat
     )
 
 
+def remove_from_schedule(schedule: Schedule, what: str):
+    for i, scheduled_maintenance in enumerate(schedule.scheduled_maintenances):
+        if scheduled_maintenance.maintenance.what == what:
+            del schedule.scheduled_maintenances[i]
+
+
 def renew_maintenance(schedule: Schedule, what: str, from_date: date):
     for i, scheduled_maintenance in enumerate(schedule.scheduled_maintenances):
         if scheduled_maintenance.maintenance.what == what:
