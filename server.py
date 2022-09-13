@@ -8,7 +8,7 @@ from maintenance_schedule.remind import (
     new_schedule,
     add_to_schedule,
 )
-from maintenance_schedule.parse import parse_maintenance
+from maintenance_schedule.parse import parse_maintenance, parse_from_date
 
 
 async def websocket_handler(request):
@@ -23,7 +23,7 @@ async def websocket_handler(request):
                 add_to_schedule(
                     schedule,
                     parse_maintenance(msg.data),
-                    datetime.date.today(),
+                    parse_from_date(msg.data, datetime.date.today()),
                 )
                 response = io.StringIO()
                 print(schedule, file=response)
