@@ -1,4 +1,4 @@
-from typing import NamedTuple, List
+from typing import NamedTuple, List, Optional
 from datetime import date
 import bisect
 
@@ -64,3 +64,12 @@ def renew_maintenance(schedule: Schedule, what: str, from_date: date):
                 from_date=from_date
             )
             return
+
+
+def find_scheduled_maintenance(
+    schedule: Schedule, what: str
+) -> Optional[ScheduledMaintenance]:
+    for scheduled_maintenance in schedule.scheduled_maintenances:
+        if scheduled_maintenance.maintenance.what == what:
+            return scheduled_maintenance
+    return None

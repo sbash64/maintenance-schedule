@@ -5,6 +5,7 @@ from maintenance_schedule.remind import (
     new_schedule,
     renew_maintenance,
     add_to_schedule,
+    find_scheduled_maintenance,
     Maintenance,
     HowOften,
 )
@@ -30,5 +31,6 @@ class RenewTestCase(unittest.TestCase):
         )
         renew_maintenance(schedule, "wash vacuum filters", datetime.date(2022, 10, 31))
         self.assertEqual(
-            schedule.scheduled_maintenances[2].from_date, datetime.date(2022, 10, 31)
+            find_scheduled_maintenance(schedule, "wash vacuum filters").from_date,
+            datetime.date(2022, 10, 31),
         )
