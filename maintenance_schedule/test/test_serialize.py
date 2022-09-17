@@ -62,7 +62,7 @@ class SerializeTestCase(unittest.TestCase):
         )
         add_to_schedule(
             schedule,
-            Maintenance(what="clean water bowl", how_often=HowOften(months=1)),
+            Maintenance(what="clean water bowl", how_often=HowOften(days=20)),
             datetime.date(2022, 8, 30),
         )
         add_to_schedule(
@@ -75,7 +75,7 @@ class SerializeTestCase(unittest.TestCase):
         self.assertEqual(
             file.written,
             """\
-in 1 month from 08/30/2022 clean water bowl
+in 20 days from 08/30/2022 clean water bowl
 in 6 months from 08/30/2022 replace furnace filter
 in 1 year from 08/30/2022 service mower blade
 """,

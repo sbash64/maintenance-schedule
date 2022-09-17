@@ -35,7 +35,10 @@ def deserialize(file) -> Schedule:
 
 def serialize(schedule: Schedule, file):
     for scheduled_maintenance in schedule.scheduled_maintenances:
-        if scheduled_maintenance.maintenance.how_often.months > 0:
+        if scheduled_maintenance.maintenance.how_often.days > 0:
+            time_unit = "day"
+            time_quantity = scheduled_maintenance.maintenance.how_often.days
+        elif scheduled_maintenance.maintenance.how_often.months > 0:
             time_unit = "month"
             time_quantity = scheduled_maintenance.maintenance.how_often.months
         else:
