@@ -2,7 +2,7 @@ import unittest
 import datetime
 
 
-from maintenance_schedule.parse import parse_maintenance, parse_from_date
+from maintenance_schedule.parse import parse_maintenance, parse_from_date, parse_what
 
 
 class ParseTestCase(unittest.TestCase):
@@ -27,3 +27,7 @@ class ParseTestCase(unittest.TestCase):
             datetime.date(2022, 3, 2),
         )
         self.assertEqual(from_date, datetime.date(2022, 3, 2))
+
+    def test_what(self):
+        what = parse_what('{"method":"remove","what":"wash vacuum filters"}')
+        self.assertEqual(what, "wash vacuum filters")

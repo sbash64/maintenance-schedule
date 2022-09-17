@@ -36,3 +36,8 @@ def parse_from_date(
         return datetime.date.fromisoformat(decoded["fromDate"])
     except ValueError:
         return default_date
+
+
+def parse_what(message: str) -> str:
+    decoded = json.loads(message)
+    return decoded["what"]
