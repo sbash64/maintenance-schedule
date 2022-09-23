@@ -12,29 +12,37 @@ from maintenance_schedule.remind import (
 from maintenance_schedule.parse import parse_maintenance, parse_from_date
 
 
+async def handle_text_message(websocket_response, message, schedule):
+    if message.data == "close":
+        await websocket_response.close()
+    else:
+        add_to_schedule(
+            schedule,
+            parse_maintenance(message.data),
+            parse_from_date(message.data, datetime.date.today()),
+        )
+        response = io.StringIO()
+        print(schedule, file=response)
+        response_message = response.getvalue()
+        response.close()
+        await websocket_response.send_str(response_message)
+
+
+async def handle_message(websocket_response, message, schedule):
+    if message.type == aiohttp.WSMsgType.TEXT:
+        await handle_text_message(websocket_response, message, schedule)
+    elif message.type == aiohttp.WSMsgType.ERROR:
+        print(
+            f"websocket connection closed with exception {websocket_response.exception()}"
+        )
+
+
 async def websocket_handler(request):
     schedule = new_schedule()
     websocket_response = web.WebSocketResponse()
     await websocket_response.prepare(request)
     async for message in websocket_response:
-        if message.type == aiohttp.WSMsgType.TEXT:
-            if message.data == "close":
-                await websocket_response.close()
-            else:
-                add_to_schedule(
-                    schedule,
-                    parse_maintenance(message.data),
-                    parse_from_date(message.data, datetime.date.today()),
-                )
-                response = io.StringIO()
-                print(schedule, file=response)
-                response_message = response.getvalue()
-                response.close()
-                await websocket_response.send_str(response_message)
-        elif message.type == aiohttp.WSMsgType.ERROR:
-            print(
-                f"websocket connection closed with exception {websocket_response.exception()}"
-            )
+        await handle_message(websocket_response, message, schedule)
     print("websocket connection closed")
     return websocket_response
 
