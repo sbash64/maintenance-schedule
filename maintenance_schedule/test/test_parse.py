@@ -8,6 +8,7 @@ from maintenance_schedule.parse import (
     parse_what,
     parse_method,
     add_to_schedule_from_message,
+    remove_from_schedule_from_message,
 )
 
 
@@ -38,8 +39,12 @@ class ParseTestCase(unittest.TestCase):
         what = parse_what('{"method":"remove","what":"wash vacuum filters"}')
         self.assertEqual(what, "wash vacuum filters")
 
-    def test_method(self):
+    def test_method_add(self):
         method = parse_method(
             '{"method":"add","what":"wash vacuum filters","fromDate":"2022-09-21","howOften":{"days":"","months":"2","years":""}}'
         )
         self.assertEqual(method, add_to_schedule_from_message)
+
+    def test_method_remove(self):
+        method = parse_method('{"method":"remove","what":"wash vacuum filters"}')
+        self.assertEqual(method, remove_from_schedule_from_message)

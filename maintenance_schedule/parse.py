@@ -2,7 +2,13 @@ from typing import Dict, Callable
 import datetime
 import json
 
-from maintenance_schedule.remind import Maintenance, HowOften, Schedule, add_to_schedule
+from maintenance_schedule.remind import (
+    Maintenance,
+    HowOften,
+    Schedule,
+    add_to_schedule,
+    remove_from_schedule,
+)
 
 
 def to_int(s: str) -> int:
@@ -45,7 +51,10 @@ def parse_what(message: str) -> str:
 
 def parse_method(message: str) -> Callable[[str, Schedule], None]:
     decoded = json.loads(message)
-    methods = {"add": add_to_schedule_from_message}
+    methods = {
+        "add": add_to_schedule_from_message,
+        "remove": remove_from_schedule_from_message,
+    }
     return methods[decoded["method"]]
 
 
@@ -55,3 +64,7 @@ def add_to_schedule_from_message(message: str, schedule: Schedule):
         parse_maintenance(message),
         parse_from_date(message, datetime.date.today()),
     )
+
+
+def remove_from_schedule_from_message(message: str, schedule: Schedule):
+    remove_from_schedule(schedule, parse_what(message))
