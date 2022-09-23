@@ -2,7 +2,7 @@ from typing import Dict, Callable
 import datetime
 import json
 
-from maintenance_schedule.remind import Maintenance, HowOften, Schedule
+from maintenance_schedule.remind import Maintenance, HowOften, Schedule, add_to_schedule
 
 
 def to_int(s: str) -> int:
@@ -50,4 +50,8 @@ def parse_method(message: str) -> Callable[[str, Schedule], None]:
 
 
 def add_to_schedule_from_message(message: str, schedule: Schedule):
-    pass
+    add_to_schedule(
+        schedule,
+        parse_maintenance(message.data),
+        parse_from_date(message.data, datetime.date.today()),
+    )
