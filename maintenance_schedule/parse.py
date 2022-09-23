@@ -52,6 +52,6 @@ def parse_method(message: str) -> Callable[[str, Schedule], None]:
 def add_to_schedule_from_message(message: str, schedule: Schedule):
     add_to_schedule(
         schedule,
-        parse_maintenance(message.data),
-        parse_from_date(message.data, datetime.date.today()),
+        parse_maintenance(message),
+        parse_from_date(message, datetime.date.today()),
     )

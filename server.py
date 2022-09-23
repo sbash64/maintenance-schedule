@@ -1,26 +1,17 @@
 import io
-import datetime
 
 from aiohttp import web
 import aiohttp
 
-from maintenance_schedule.remind import (
-    new_schedule,
-    add_to_schedule,
-    remove_from_schedule,
-)
-from maintenance_schedule.parse import parse_maintenance, parse_from_date
+from maintenance_schedule.remind import new_schedule
+from maintenance_schedule.parse import parse_method
 
 
 async def handle_text_message(websocket_response, message, schedule):
-    if message.data == "close":
+    if message == "close":
         await websocket_response.close()
     else:
-        add_to_schedule(
-            schedule,
-            parse_maintenance(message.data),
-            parse_from_date(message.data, datetime.date.today()),
-        )
+        parse_method(message)(message, schedule)
         response = io.StringIO()
         print(schedule, file=response)
         response_message = response.getvalue()
@@ -30,7 +21,7 @@ async def handle_text_message(websocket_response, message, schedule):
 
 async def handle_message(websocket_response, message, schedule):
     if message.type == aiohttp.WSMsgType.TEXT:
-        await handle_text_message(websocket_response, message, schedule)
+        await handle_text_message(websocket_response, message.data, schedule)
     elif message.type == aiohttp.WSMsgType.ERROR:
         print(
             f"websocket connection closed with exception {websocket_response.exception()}"
