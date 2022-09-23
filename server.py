@@ -48,9 +48,11 @@ async def websocket_handler(request):
 
 
 application = web.Application()
-application.add_routes([web.get("/", lambda request: web.FileResponse("index.html"))])
 application.add_routes(
-    [web.get("/browser.js", lambda request: web.FileResponse("browser.js"))]
+    [
+        web.get("/", lambda request: web.FileResponse("index.html")),
+        web.get("/browser.js", lambda request: web.FileResponse("browser.js")),
+        web.get("/ws", websocket_handler),
+    ]
 )
-application.add_routes([web.get("/ws", websocket_handler)])
 web.run_app(application)
