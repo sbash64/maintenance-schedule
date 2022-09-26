@@ -6,7 +6,7 @@ import aiohttp
 
 from maintenance_schedule.remind import new_schedule
 from maintenance_schedule.parse import parse_method, Session
-from maintenance_schedule.persistence import deserialize, serialize
+from maintenance_schedule.persistence import deserialize
 
 
 async def handle_text_message(websocket_response, message, session: Session):

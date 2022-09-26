@@ -2,6 +2,15 @@ function parseWebsocketMessage(event, serverMessage) {
   serverMessage.textContent = event.data;
 }
 
+function saveScheduleControls() {
+  const button = document.createElement("button");
+  button.textContent = "save";
+  button.onclick = () => {
+    websocket.send(JSON.stringify({ method: "save" }));
+  };
+  return button;
+}
+
 function createRemoveFromScheduleControls() {
   const controls = document.createElement("div");
   controls.style.display = "flex";
@@ -93,11 +102,7 @@ websocket.onmessage = (event) => {
   parseWebsocketMessage(event, serverMessage);
 };
 
-const removeFromScheduleControls = document.createElement("div");
-removeFromScheduleControls.style.display = "flex";
-removeFromScheduleControls.style.flexDirection = "column";
-removeFromScheduleControls.style.alignItems = "flex-end";
-
 document.body.append(createAddToScheduleControls());
 document.body.append(createRemoveFromScheduleControls());
+document.body.append(saveScheduleControls());
 document.body.append(serverMessage);
