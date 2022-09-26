@@ -5,25 +5,25 @@ from aiohttp import web
 import aiohttp
 
 from maintenance_schedule.remind import new_schedule
-from maintenance_schedule.parse import parse_method
+from maintenance_schedule.parse import parse_method, Session
 from maintenance_schedule.persistence import deserialize, serialize
 
 
-async def handle_text_message(websocket_response, message, schedule):
+async def handle_text_message(websocket_response, message, session: Session):
     if message == "close":
         await websocket_response.close()
     else:
-        parse_method(message)(message, schedule)
+        parse_method(message)(message, session)
         response = io.StringIO()
-        print(schedule, file=response)
+        print(session.schedule, file=response)
         response_message = response.getvalue()
         response.close()
         await websocket_response.send_str(response_message)
 
 
-async def handle_message(websocket_response, message, schedule):
+async def handle_message(websocket_response, message, session: Session):
     if message.type == aiohttp.WSMsgType.TEXT:
-        await handle_text_message(websocket_response, message.data, schedule)
+        await handle_text_message(websocket_response, message.data, session)
     elif message.type == aiohttp.WSMsgType.ERROR:
         print(
             f"websocket connection closed with exception {websocket_response.exception()}"
@@ -40,7 +40,9 @@ async def websocket_handler(request, file_path):
     websocket_response = web.WebSocketResponse()
     await websocket_response.prepare(request)
     async for message in websocket_response:
-        await handle_message(websocket_response, message, schedule)
+        await handle_message(
+            websocket_response, message, Session(schedule=schedule, file_path=file_path)
+        )
     print("websocket connection closed")
     return websocket_response
 

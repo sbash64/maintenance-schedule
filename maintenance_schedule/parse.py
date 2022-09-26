@@ -1,4 +1,4 @@
-from typing import Dict, Callable
+from typing import Dict, Callable, NamedTuple
 import datetime
 import json
 
@@ -9,6 +9,7 @@ from maintenance_schedule.remind import (
     add_to_schedule,
     remove_from_schedule,
 )
+from maintenance_schedule.persistence import serialize
 
 
 def to_int(s: str) -> int:
@@ -49,22 +50,33 @@ def parse_what(message: str) -> str:
     return decoded["what"]
 
 
-def parse_method(message: str) -> Callable[[str, Schedule], None]:
+class Session(NamedTuple):
+    schedule: Schedule
+    file_path: str
+
+
+def parse_method(message: str) -> Callable[[str, Session], None]:
     decoded = json.loads(message)
     methods = {
         "add": add_to_schedule_from_message,
         "remove": remove_from_schedule_from_message,
+        "save": save_schedule,
     }
     return methods[decoded["method"]]
 
 
-def add_to_schedule_from_message(message: str, schedule: Schedule):
+def add_to_schedule_from_message(message: str, session: Session):
     add_to_schedule(
-        schedule,
+        session.schedule,
         parse_maintenance(message),
         parse_from_date(message, datetime.date.today()),
     )
 
 
-def remove_from_schedule_from_message(message: str, schedule: Schedule):
-    remove_from_schedule(schedule, parse_what(message))
+def remove_from_schedule_from_message(message: str, session: Session):
+    remove_from_schedule(session.schedule, parse_what(message))
+
+
+def save_schedule(message: str, session: Session):
+    with open(session.file_path, "w", encoding="utf-8") as file:
+        serialize(session.schedule, file)
