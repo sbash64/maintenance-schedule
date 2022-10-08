@@ -9,16 +9,20 @@ from maintenance_schedule.parse import parse_method, Session
 from maintenance_schedule.persistence import deserialize
 
 
+async def send_schedule(websocket_response, schedule):
+    response = io.StringIO()
+    print(schedule, file=response)
+    response_message = response.getvalue()
+    response.close()
+    await websocket_response.send_str(response_message)
+
+
 async def handle_text_message(websocket_response, message, session: Session):
     if message == "close":
         await websocket_response.close()
     else:
         parse_method(message)(message, session)
-        response = io.StringIO()
-        print(session.schedule, file=response)
-        response_message = response.getvalue()
-        response.close()
-        await websocket_response.send_str(response_message)
+        await send_schedule(websocket_response, session.schedule)
 
 
 async def handle_message(websocket_response, message, session: Session):
@@ -39,6 +43,7 @@ async def websocket_handler(request, file_path):
 
     websocket_response = web.WebSocketResponse()
     await websocket_response.prepare(request)
+    await send_schedule(websocket_response, schedule)
     async for message in websocket_response:
         await handle_message(
             websocket_response, message, Session(schedule=schedule, file_path=file_path)
